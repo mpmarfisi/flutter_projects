@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:navigation/data/tasks_list.dart';
+import 'package:navigation/domain/task.dart';
+import 'package:navigation/presentation/widgets/task_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.username});
@@ -14,20 +17,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Center vertically
-          children: [
-            Text(
-              'Bienvenido ${widget.username}',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: _TasksView(),
+    );
+  }
+}
+
+class _TasksView extends StatelessWidget {
+  const _TasksView({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: tasksList.length,
+      itemBuilder: (context, index){
+        return TaskItem(
+          task: tasksList[index],
+          onTap: () {
+            // Navigate to detail screen
+            Navigator.pushNamed(context, '/detail');
+          },
+        );
+      }
     );
   }
 }
