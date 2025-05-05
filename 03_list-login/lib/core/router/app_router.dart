@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:navigation/presentation/screens/detail_screen.dart';
 import 'package:navigation/presentation/screens/home_screen.dart';
 import 'package:navigation/presentation/screens/login_screen.dart';
+import 'package:navigation/presentation/screens/profile_screen.dart';
+import 'package:navigation/presentation/screens/settings_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -26,6 +28,14 @@ final appRouter = GoRouter(
         taskId: taskId!,
       );
     }),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen()
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen()
+    ),
     // Add more routes here
   ],
 );
