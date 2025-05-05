@@ -2,6 +2,7 @@ import 'package:navigation/domain/task.dart';
 
 final List<Task> tasksList = [
   Task(
+    id: "1",
     title: 'Complete Flutter Project',
     description: 'Finish the main features of the task management app',
     imageUrl: 'https://picsum.photos/200/300?random=1',
@@ -13,6 +14,7 @@ final List<Task> tasksList = [
     createdAt: DateTime.now().subtract(const Duration(days: 5)),
   ),
   Task(
+    id: "2",
     title: 'Weekly Team Meeting',
     description: 'Discuss project progress and upcoming milestones',
     imageUrl: 'https://picsum.photos/200/300?random=2',
@@ -23,6 +25,7 @@ final List<Task> tasksList = [
     createdAt: DateTime.now().subtract(const Duration(days: 1)),
   ),
   Task(
+    id: "3",
     title: 'Update Documentation',
     description: 'Review and update project documentation',
     imageUrl: 'https://picsum.photos/200/300?random=3',
@@ -33,6 +36,7 @@ final List<Task> tasksList = [
     createdAt: DateTime.now().subtract(const Duration(days: 2)),
   ),
   Task(
+    id: "4",
     title: 'Code Review',
     description: 'Review pull requests from team members',
     imageUrl: 'https://picsum.photos/200/300?random=4',
@@ -45,6 +49,7 @@ final List<Task> tasksList = [
     completedAt: DateTime.now(),
   ),
   Task(
+    id: "5",
     title: 'Bug Fixing',
     description: 'Fix reported issues in the application',
     imageUrl: 'https://picsum.photos/200/300?random=5',

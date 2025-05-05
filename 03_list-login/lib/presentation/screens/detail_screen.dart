@@ -1,29 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:navigation/data/tasks_list.dart';
+import 'package:navigation/domain/task.dart';
 
-class DetailScreen extends StatefulWidget{
-  const DetailScreen({super.key});
+class DetailScreen extends StatelessWidget{
+  const DetailScreen({
+    super.key,
+    required this.taskId,
+  });
 
-  @override
-  State<DetailScreen> createState() => _DetailScreenState();
-}
+  final String taskId;
 
-class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final task = tasksList.firstWhere((task) => task.id == taskId);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detail Screen'),
+        title: const Text('Task Detail'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome to the Detail Screen!',
-              style: const TextStyle(fontSize: 24),
+      body: TaskDetailView(task: task),
+    );
+  }
+}
+
+class TaskDetailView extends StatelessWidget {
+  const TaskDetailView({
+    super.key,
+    required this.task,
+  });
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (task.imageUrl != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(task.imageUrl!),
             ),
-          ],
-        ),
+          const SizedBox(height: 20),
+          Text(
+            task.title,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            task.description,
+            style: const TextStyle(fontSize: 18),
+          ),
+          Text(
+            task.dueDate,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }

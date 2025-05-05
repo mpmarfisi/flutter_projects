@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation/data/tasks_list.dart';
 import 'package:navigation/domain/task.dart';
 import 'package:navigation/presentation/widgets/task_item.dart';
@@ -35,11 +36,14 @@ class _TasksView extends StatelessWidget {
         return TaskItem(
           task: tasksList[index],
           onTap: () {
-            // Navigate to detail screen
-            Navigator.pushNamed(context, '/detail');
+            navigateToDetailScreen(context, tasksList[index]);
           },
         );
       }
     );
+  }
+
+  void navigateToDetailScreen(BuildContext context, Task task) {
+    context.push('/task-details/${task.id}');
   }
 }
