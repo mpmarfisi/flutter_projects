@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 context.pop(context); // Close the drawer
                 // Handle logoff logic
-                context.push('/login');
+                context.go('/login');
               },
             ),
           ],

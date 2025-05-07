@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   final password = passwordController.text;
 
                   if (username == _validUsername && password == _validPassword) {
-                    context.push('/home', extra: username);
+                    context.go('/home', extra: username);
                   } else {
                     final snackBar = SnackBar(
                       content: const Text('Invalid username or password'),
