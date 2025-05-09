@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('Logoff'),
+              title: const Text('Logoff (Agregar popup)'),
               onTap: () {
                 context.pop(context); // Close the drawer
                 // Handle logoff logic
@@ -75,6 +75,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: _TasksView(),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => SnackBar(
+          content: const Text('Snackbar'),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              // Some code to undo the change.
+            },
+          ),
+        ),
+        label: const Text('+'), 
+        shape: CircleBorder(
+          side: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+        ),
+        // icon: const Icon(Icons.plus_one_outlined),
+      ),
     );
   }
 }

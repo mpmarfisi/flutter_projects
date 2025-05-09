@@ -102,65 +102,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(
-                  user.imageUrl ?? 'https://placeholder.com/avatar.png',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(
+                    user.imageUrl ?? 'https://placeholder.com/avatar.png',
+                  ),
                 ),
               ),
-            ),
-            Divider(
-              height: 1, // The height of the divider
-              color: Colors.grey, // The color of the divider
-              thickness: 1, // The thickness of the divider line
-              // indent: 20, // The left padding (indent) of the divider
-              // endIndent: 20, // The right padding (endIndent) of the divider
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
+              Divider(
+                height: 1, // The height of the divider
+                color: Colors.grey, // The color of the divider
+                thickness: 1, // The thickness of the divider line
+                // indent: 20, // The left padding (indent) of the divider
+                // endIndent: 20, // The right padding (endIndent) of the divider
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: bornDateController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Born Date',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
               ),
-              onTap: _selectBornDate, // Open date picker on tap
-            ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: isModified ? _saveChanges : null, // Enable only if modified
-              child: const Text('Update'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              TextField(
+                controller: bornDateController,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  labelText: 'Born Date',
+                  border: OutlineInputBorder(),
+                ),
+                onTap: _selectBornDate, // Open date picker on tap
+              ),
+              const SizedBox(height: 50),
+              ElevatedButton(
+                onPressed: isModified ? _saveChanges : null, // Enable only if modified
+                child: const Text('Update'),
+              ),
+            ],
+          ),
         ),
       ),
     );

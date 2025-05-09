@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation/data/tasks_list.dart';
 import 'package:navigation/domain/task.dart';
+import 'package:navigation/presentation/screens/edit_screen.dart';
 
 class DetailScreen extends StatelessWidget{
   const DetailScreen({
@@ -16,6 +17,22 @@ class DetailScreen extends StatelessWidget{
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Detail'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () async {
+              final updatedTask = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditScreen(task: task),
+                ),
+              );
+              if (updatedTask != null) {
+                // Handle the updated task (e.g., update the task list)
+              }
+            },
+          ),
+        ],
       ),
       body: TaskDetailView(task: task),
     );
