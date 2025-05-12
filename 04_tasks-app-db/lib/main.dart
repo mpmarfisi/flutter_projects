@@ -1,8 +1,19 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:navigation/core/database/database.dart';
 import 'package:navigation/core/router/app_router.dart';
-import 'package:navigation/presentation/screens/login_screen.dart';
 
-void main() {
+late AppDatabase database;
+Future<void> main() async {
+  // Ensure that the binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the database and measure initialization time
+  final stopwatch = Stopwatch()..start();
+  database = await AppDatabase.create('app_database.db');
+  stopwatch.stop();
+  log('Database initialized in ${stopwatch.elapsed.inMilliseconds}ms');
+
   runApp(const MainApp());
 }
 

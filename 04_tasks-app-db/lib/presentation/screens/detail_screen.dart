@@ -139,16 +139,17 @@ class SlideThirdView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Created At: ${task.createdAt?.toLocal().toString().split(' ')[0]}',
+          'Created At: ${task.createdAt != null ? DateTime.parse(task.createdAt!).toLocal().toString().split(' ')[0] : 'N/A'}',
           style: const TextStyle(fontSize: 18),
         ),
         if (task.isCompleted)
           Text(
-            'Completed At: ${task.completedAt?.toLocal().toString().split(' ')[0]}',
+            'Completed At: ${task.completedAt != null ? DateTime.parse(task.completedAt!).toLocal().toString().split(' ')[0] : 'N/A'}',
             style: const TextStyle(fontSize: 18),
           ),
       ],
     );
+    
   }
 }
 

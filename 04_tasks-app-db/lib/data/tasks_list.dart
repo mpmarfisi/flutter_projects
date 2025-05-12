@@ -11,7 +11,7 @@ final List<Task> tasksList = [
     priority: 1,
     progress: 75,
     isCompleted: false,
-    createdAt: DateTime.now().subtract(const Duration(days: 5)),
+    createdAt: '2024-02-10', // Replaced DateTime with a string
   ),
   Task(
     id: "2",
@@ -22,7 +22,8 @@ final List<Task> tasksList = [
     category: 'Meetings',
     priority: 2,
     progress: 0,
-    createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    isCompleted: false,
+    createdAt: '2024-02-14', // Replaced DateTime with a string
   ),
   Task(
     id: "3",
@@ -32,8 +33,9 @@ final List<Task> tasksList = [
     dueDate: '2024-02-20',
     category: 'Documentation',
     priority: 3,
-    progress: 30,
-    createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    progress: 50,
+    isCompleted: false,
+    createdAt: '2024-02-12', // Replaced DateTime with a string
   ),
   Task(
     id: "4",
@@ -45,8 +47,7 @@ final List<Task> tasksList = [
     priority: 2,
     progress: 100,
     isCompleted: true,
-    createdAt: DateTime.now().subtract(const Duration(days: 3)),
-    completedAt: DateTime.now(),
+    createdAt: '2024-02-10', // Replaced DateTime with a string
   ),
   Task(
     id: "5",
@@ -57,6 +58,6 @@ final List<Task> tasksList = [
     category: 'Development',
     priority: 1,
     progress: 50,
-    createdAt: DateTime.now().subtract(const Duration(days: 1)),
+    createdAt: '2024-02-11', // Replaced DateTime with a string
   ),
 ];

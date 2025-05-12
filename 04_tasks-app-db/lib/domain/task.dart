@@ -1,4 +1,8 @@
+import 'package:floor/floor.dart';
+
+@Entity(tableName: 'Task')
 class Task {
+  @primaryKey
   final String id;
   final String title;
   final String description;
@@ -8,8 +12,8 @@ class Task {
   final int priority;
   final int progress;
   final bool isCompleted;
-  final DateTime? createdAt;
-  final DateTime? completedAt;
+  final String? createdAt; // Changed from DateTime? to String?
+  final String? completedAt; // Changed from DateTime? to String?
 
   Task({
     required this.id,
@@ -21,7 +25,7 @@ class Task {
     this.category = 'General',
     this.progress = 0,
     this.isCompleted = false,
-    this.createdAt,
-    this.completedAt
+    this.createdAt, // Updated type
+    this.completedAt, // Updated type
   });
 }

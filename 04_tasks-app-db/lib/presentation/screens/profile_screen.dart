@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                    password: "pass123", 
                    username: "user123", 
                    imageUrl: 'https://placeholder.com/avatar.png',
-                   bornDate: DateTime(1999, 7, 6),);
+                   bornDate: "1999-07-06",); // Changed to String
 
   @override
   void initState() {
@@ -54,13 +54,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _selectBornDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: user.bornDate,
+      initialDate: DateTime.parse(user.bornDate), // Parse String to DateTime
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (pickedDate != null && pickedDate != user.bornDate) {
+    if (pickedDate != null && pickedDate.toIso8601String() != user.bornDate) {
       setState(() {
         bornDateController.text = _formatDate(pickedDate);
+        user = User(
+          username: user.username,
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          imageUrl: user.imageUrl,
+          bornDate: pickedDate.toIso8601String(), // Convert DateTime to String
+        );
         _checkIfModified();
       });
     }

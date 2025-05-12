@@ -64,11 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('Logoff (Agregar popup)'),
+              title: const Text('Logoff'),
               onTap: () {
-                context.pop(context); // Close the drawer
-                // Handle logoff logic
-                context.go('/login');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      // title: const Text('Cerrar sesión'),
+                      content: const Text('¿Are you sure you want to logoff?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Cancel'),
+                          onPressed: () {
+                            context.pop();
+                          },
+                        ),
+                        FilledButton(
+                          child: const Text('Logoff'),
+                          onPressed: () {
+                            context.pop();
+                            context.pop(context);
+                            context.go('/login');
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],

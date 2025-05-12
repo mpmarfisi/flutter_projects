@@ -108,8 +108,8 @@ class _EditScreenState extends State<EditScreen> {
                       priority: priority,
                       progress: progress,
                       isCompleted: isCompleted,
-                      createdAt: widget.task?.createdAt ?? DateTime.now(),
-                      completedAt: isCompleted ? DateTime.now() : null,
+                      createdAt: widget.task?.createdAt ?? DateTime.now().toIso8601String(),
+                      completedAt: isCompleted ? DateTime.now().toIso8601String() : null,
                     );
                     Navigator.pop(context, task);
                   }

@@ -69,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Username',
+                    hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.2),
                     border: OutlineInputBorder(
@@ -86,8 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(color: Colors.white),
+                    hintText: 'Password',
+                    hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.2),
                     border: OutlineInputBorder(
