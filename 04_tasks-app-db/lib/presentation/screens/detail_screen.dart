@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navigation/data/tasks_list.dart';
 import 'package:navigation/domain/task.dart';
+import 'package:navigation/main.dart';
 import 'package:navigation/presentation/screens/edit_screen.dart';
 
 class DetailScreen extends StatelessWidget{
@@ -13,7 +14,6 @@ class DetailScreen extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final task = tasksList.firstWhere((task) => task.id == taskId);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Task Detail'),
@@ -21,20 +21,34 @@ class DetailScreen extends StatelessWidget{
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () async {
-              final updatedTask = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditScreen(task: task),
-                ),
-              );
-              if (updatedTask != null) {
-                // Handle the updated task (e.g., update the task list)
-              }
+              // final updatedTask = await context.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => EditScreen(task: task),
+              //   ),
+              // );
+              // if (updatedTask != null) {
+              //   // Handle the updated task (e.g., update the task list)
+              // }
             },
           ),
         ],
       ),
-      body: TaskDetailView(task: task),
+      body: FutureBuilder<Task?>(
+        future: database.tasksDao.getTaskById(taskId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('Task not found.'));
+          } else {
+            final task = snapshot.data!;
+            return TaskDetailView(task: task);
+          }
+        },
+      ),
     );
   }
 }
@@ -139,17 +153,16 @@ class SlideThirdView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Created At: ${task.createdAt != null ? DateTime.parse(task.createdAt!).toLocal().toString().split(' ')[0] : 'N/A'}',
+          'Created At: ${task.createdAt}',
           style: const TextStyle(fontSize: 18),
         ),
         if (task.isCompleted)
           Text(
-            'Completed At: ${task.completedAt != null ? DateTime.parse(task.completedAt!).toLocal().toString().split(' ')[0] : 'N/A'}',
+            'Completed At: ${task.completedAt}',
             style: const TextStyle(fontSize: 18),
           ),
       ],
     );
-    
   }
 }
 

@@ -42,7 +42,7 @@ abstract class AppDatabase extends FloorDatabase {
         id: '1',
         title: 'Sample Task',
         description: 'This is a sample task',
-        imageUrl: 'via.placeholder.com/150',
+        imageUrl: 'https://via.placeholder.com/150',
         dueDate: '2023-12-31',
         priority: 1,
         userId: 'user123', // Associate task with user
