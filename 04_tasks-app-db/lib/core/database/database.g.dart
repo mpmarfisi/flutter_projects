@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Task` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `category` TEXT NOT NULL, `priority` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `createdAt` TEXT, `completedAt` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Task` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `category` TEXT NOT NULL, `priority` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `createdAt` TEXT, `completedAt` TEXT, `userId` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`username`) ON UPDATE NO ACTION ON DELETE CASCADE, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`username` TEXT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `imageUrl` TEXT, `bornDate` TEXT NOT NULL, PRIMARY KEY (`username`))');
 
@@ -138,7 +138,8 @@ class _$TasksDao extends TasksDao {
                   'progress': item.progress,
                   'isCompleted': item.isCompleted ? 1 : 0,
                   'createdAt': item.createdAt,
-                  'completedAt': item.completedAt
+                  'completedAt': item.completedAt,
+                  'userId': item.userId
                 }),
         _taskUpdateAdapter = UpdateAdapter(
             database,
@@ -155,7 +156,8 @@ class _$TasksDao extends TasksDao {
                   'progress': item.progress,
                   'isCompleted': item.isCompleted ? 1 : 0,
                   'createdAt': item.createdAt,
-                  'completedAt': item.completedAt
+                  'completedAt': item.completedAt,
+                  'userId': item.userId
                 }),
         _taskDeletionAdapter = DeletionAdapter(
             database,
@@ -172,7 +174,8 @@ class _$TasksDao extends TasksDao {
                   'progress': item.progress,
                   'isCompleted': item.isCompleted ? 1 : 0,
                   'createdAt': item.createdAt,
-                  'completedAt': item.completedAt
+                  'completedAt': item.completedAt,
+                  'userId': item.userId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -197,6 +200,7 @@ class _$TasksDao extends TasksDao {
             imageUrl: row['imageUrl'] as String,
             dueDate: row['dueDate'] as String,
             priority: row['priority'] as int,
+            userId: row['userId'] as String,
             category: row['category'] as String,
             progress: row['progress'] as int,
             isCompleted: (row['isCompleted'] as int) != 0,
@@ -214,12 +218,55 @@ class _$TasksDao extends TasksDao {
             imageUrl: row['imageUrl'] as String,
             dueDate: row['dueDate'] as String,
             priority: row['priority'] as int,
+            userId: row['userId'] as String,
             category: row['category'] as String,
             progress: row['progress'] as int,
             isCompleted: (row['isCompleted'] as int) != 0,
             createdAt: row['createdAt'] as String?,
             completedAt: row['completedAt'] as String?),
         arguments: [id]);
+  }
+
+  @override
+  Future<List<Task>> getTasksByUserId(String userId) async {
+    return _queryAdapter.queryList('SELECT * FROM Task WHERE userId = ?1',
+        mapper: (Map<String, Object?> row) => Task(
+            id: row['id'] as String,
+            title: row['title'] as String,
+            description: row['description'] as String,
+            imageUrl: row['imageUrl'] as String,
+            dueDate: row['dueDate'] as String,
+            priority: row['priority'] as int,
+            userId: row['userId'] as String,
+            category: row['category'] as String,
+            progress: row['progress'] as int,
+            isCompleted: (row['isCompleted'] as int) != 0,
+            createdAt: row['createdAt'] as String?,
+            completedAt: row['completedAt'] as String?),
+        arguments: [userId]);
+  }
+
+  @override
+  Future<Task?> getTaskByIdAndUserId(
+    String id,
+    String userId,
+  ) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Task WHERE id = ?1 AND userId = ?2',
+        mapper: (Map<String, Object?> row) => Task(
+            id: row['id'] as String,
+            title: row['title'] as String,
+            description: row['description'] as String,
+            imageUrl: row['imageUrl'] as String,
+            dueDate: row['dueDate'] as String,
+            priority: row['priority'] as int,
+            userId: row['userId'] as String,
+            category: row['category'] as String,
+            progress: row['progress'] as int,
+            isCompleted: (row['isCompleted'] as int) != 0,
+            createdAt: row['createdAt'] as String?,
+            completedAt: row['completedAt'] as String?),
+        arguments: [id, userId]);
   }
 
   @override

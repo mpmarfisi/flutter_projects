@@ -5,11 +5,11 @@ class TaskItem extends StatelessWidget {
   const TaskItem({
     super.key,
     required this.task,
-    this.onTap,
+    required this.onTap,
   });
 
   final Task task;
-  final Function? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,10 @@ class TaskItem extends StatelessWidget {
         leading: task.imageUrl != null
             ? _getImage(task.imageUrl!)
             : const Icon(Icons.task),
-        title: Text(task.title),
-        subtitle: Text('${task.description}'),
+        title: Text(task.title.isNotEmpty ? task.title : 'Untitled Task'),
+        subtitle: Text(task.description.isNotEmpty ? task.description : 'No description'),
         trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () => onTap?.call(),
+        onTap: onTap,
       ),
     );
   }

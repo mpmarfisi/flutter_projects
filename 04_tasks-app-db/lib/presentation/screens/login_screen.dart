@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:navigation/data/user_dao.dart';
+import 'package:navigation/domain/user.dart';
+import 'package:navigation/main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,14 +15,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final String _validUsername = 'user123';
-  final String _validPassword = 'pass123';
+  void _login() async {
+    final UserDao userDao = database.userDao;
+    final User? user = await userDao.getUserByUsername(usernameController.text);
 
-  void _login() {
-    if (usernameController.text == _validUsername &&
-        passwordController.text == _validPassword) {
+    if (user != null && user.password == passwordController.text) {
       // Navigate to the home screen
-      context.go('/home', extra: usernameController.text);
+      context.go('/home', extra: user.username);
     } else {
       // Show an error message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -70,15 +72,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
-                    hintStyle: const TextStyle(color: Colors.white),
+                    // hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withOpacity(0.3),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  // style: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 20),
                 // Password Field
@@ -87,15 +89,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    hintStyle: const TextStyle(color: Colors.white),
+                    // hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.2),
+                    fillColor: Colors.white.withOpacity(0.3),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  // style: const TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 30),
                 // Login Button
