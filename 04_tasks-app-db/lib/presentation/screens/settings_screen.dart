@@ -33,7 +33,7 @@ class SettingsScreen extends ConsumerWidget {
                 children: [
                   const Text(
                     'Theme color:',
-                    style: TextStyle(fontSize: 16),
+                    // style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(width: 10),
                   CircleAvatar(
@@ -76,6 +76,18 @@ class SettingsScreen extends ConsumerWidget {
                   );
                 },
                 child: const Text('Change'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              title: const Text('Font Size'),
+              subtitle: Slider(
+                value: appTheme.fontSize,
+                min: 12.0,
+                max: 24.0,
+                divisions: 6,
+                label: '${appTheme.fontSize.toInt()}',
+                onChanged: (value) => themeNotifier.setFontSize(value),
               ),
             ),
           ],

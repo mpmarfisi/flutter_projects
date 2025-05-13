@@ -16,4 +16,8 @@ class ThemeNotifier extends StateNotifier<AppTheme> {
   void setColorTheme(Color color) {
     state = state.copyWith(selectedColor: color);
   }
+
+  void setFontSize(double fontSize) {
+    state = state.copyWith(fontSize: fontSize);
+  }
 }
