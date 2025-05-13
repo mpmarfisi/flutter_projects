@@ -36,19 +36,6 @@ abstract class AppDatabase extends FloorDatabase {
       ),
     ];
 
-    final tasks = [
-      Task(
-        id: '1',
-        title: 'Sample Task',
-        description: 'This is a sample task',
-        imageUrl: 'https://via.placeholder.com/150',
-        dueDate: '2023-12-31',
-        priority: 1,
-        userId: 'user123', // Associate task with user
-        createdAt: DateTime.now().toString().substring(0, 10),
-      ),
-    ];
-
     for (final user in users) {
       await database.insert('User', {
         'username': user.username,
@@ -57,23 +44,6 @@ abstract class AppDatabase extends FloorDatabase {
         'password': user.password,
         'imageUrl': user.imageUrl,
         'bornDate': user.bornDate,
-      });
-    }
-
-    for (final task in tasks) {
-      await database.insert('Task', {
-        'id': task.id,
-        'title': task.title,
-        'description': task.description,
-        'imageUrl': task.imageUrl,
-        'dueDate': task.dueDate,
-        'category': task.category,
-        'priority': task.priority,
-        'progress': task.progress,
-        'isCompleted': task.isCompleted ? 1 : 0,
-        'createdAt': task.createdAt,
-        'completedAt': task.completedAt,
-        'userId': task.userId, // Include userId
       });
     }
   }

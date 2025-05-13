@@ -12,7 +12,7 @@ Future<void> main() async {
 
   // Initialize the database and measure initialization time
   final stopwatch = Stopwatch()..start();
-  database = await AppDatabase.create('task_app_db.db');
+  database = await AppDatabase.create('tasks_app_database.db');
   stopwatch.stop();
   log('Database initialized in ${stopwatch.elapsed.inMilliseconds}ms');
   

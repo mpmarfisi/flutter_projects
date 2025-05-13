@@ -13,12 +13,13 @@ import 'package:navigation/domain/user.dart';
   ],
 )
 class Task {
-  @primaryKey
-  final String id;
+  @PrimaryKey(autoGenerate: true)
+  final int? id;
+
   final String title;
   final String description;
-  final String imageUrl;
-  final String dueDate;
+  final String? imageUrl;
+  final String? dueDate;
   final String category;
   final int priority;
   final int progress;
@@ -28,17 +29,17 @@ class Task {
   final String userId; // Foreign key to reference the User
 
   Task({
-    required this.id,
+    this.id,
     required this.title,
     required this.description,
-    required this.imageUrl,
-    required this.dueDate,
+    this.imageUrl,
+    this.dueDate,
     required this.priority,
-    required this.userId,
-    this.category = 'General',
     this.progress = 0,
+    this.category = 'General',
     this.isCompleted = false,
     this.createdAt,
     this.completedAt,
+    required this.userId,
   });
 }

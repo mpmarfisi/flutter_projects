@@ -28,7 +28,6 @@ class _EditScreenState extends State<EditScreen> {
   void initState() {
     super.initState();
     final task = widget.task;
-    id = task?.id ?? DateTime.now().toString().substring(0, 10);
     title = task?.title ?? '';
     description = task?.description ?? '';
     imageUrl = task?.imageUrl ?? '';
@@ -94,31 +93,42 @@ class _EditScreenState extends State<EditScreen> {
                 decoration: const InputDecoration(labelText: 'Category'),
                 onSaved: (value) => category = value ?? 'General',
               ),
-              TextFormField(
-                initialValue: priority.toString(),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<int>(
+                value: priority,
                 decoration: const InputDecoration(labelText: 'Priority'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => priority = int.tryParse(value ?? '0') ?? 0,
-                validator: (value) {
-                  final parsedValue = int.tryParse(value ?? '');
-                  if (parsedValue == null || parsedValue < 0 || parsedValue > 3) {
-                    return 'Priority must be between 0 and 3';
-                  }
-                  return null;
+                items: List.generate(
+                  4,
+                  (index) => DropdownMenuItem(
+                    value: index,
+                    child: Text('Priority $index'),
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    priority = value ?? 0;
+                  });
                 },
+                onSaved: (value) => priority = value ?? 0,
               ),
-              TextFormField(
-                initialValue: progress.toString(),
-                decoration: const InputDecoration(labelText: 'Progress'),
-                keyboardType: TextInputType.number,
-                onSaved: (value) => progress = int.tryParse(value ?? '0') ?? 0,
-                validator: (value) {
-                  final parsedValue = int.tryParse(value ?? '');
-                  if (parsedValue == null || parsedValue < 0 || parsedValue > 100) {
-                    return 'Progress must be between 0 and 100';
-                  }
-                  return null;
-                },
+              const SizedBox(height: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Progress'),
+                  Slider(
+                    value: progress.toDouble(),
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '$progress%',
+                    onChanged: (value) {
+                      setState(() {
+                        progress = value.toInt();
+                      });
+                    },
+                  ),
+                ],
               ),
               SwitchListTile(
                 title: const Text('Completed'),
@@ -131,7 +141,7 @@ class _EditScreenState extends State<EditScreen> {
                   if (_formKey.currentState?.validate() ?? false) {
                     _formKey.currentState?.save();
                     final task = Task(
-                      id: id,
+                      // id: id,
                       title: title,
                       description: description,
                       imageUrl: imageUrl,

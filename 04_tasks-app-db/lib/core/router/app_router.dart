@@ -26,7 +26,7 @@ final appRouter = GoRouter(
      builder: (context, state) {
       final taskId = state.pathParameters['taskId'];
       return DetailScreen(
-        taskId: taskId!,
+        taskId: taskId! as int,
       );
     }),
     GoRoute(

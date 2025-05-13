@@ -116,10 +116,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final newTask = await context.push('/edit', extra: {'userId': widget.username}) as Task?;
-          if (newTask != null) {
-            await database.tasksDao.insertTask(newTask);
-            _refreshTasks(); // Refresh tasks after adding a new one
+          final Task? newTask;
+          try{
+            newTask = await context.push('/edit', extra: {'userId': widget.username}) as Task?;
+            if (newTask != null) {
+              await database.tasksDao.insertTask(newTask);
+              _refreshTasks(); // Refresh tasks after adding a new one
+            }
+          }catch(e){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Error adding task')),
+            );
           }
         },
         shape: CircleBorder(

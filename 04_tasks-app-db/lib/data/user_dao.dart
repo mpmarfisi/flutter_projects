@@ -17,4 +17,12 @@ abstract class UserDao {
 
   @delete
   Future<void> deleteUser(User user);
+
+  Future<void> safeInsertUser(User user) async {
+    final existingUser = await getUserByUsername(user.username);
+    if (existingUser != null) {
+      throw Exception('User with username "${user.username}" already exists.');
+    }
+    await insertUser(user);
+  }
 }

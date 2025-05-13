@@ -9,7 +9,7 @@ class DetailScreen extends StatefulWidget{
     required this.taskId,
   });
 
-  final String taskId;
+  final int taskId;
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -84,7 +84,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       FilledButton(
                               onPressed: () async {
                                 await database.tasksDao.deleteTask(task!);
-                          context.pop();
+                                context.pop();
                                 context.pop(true);
                               }, 
                               child: const Text('Delete'),
@@ -148,8 +148,9 @@ class SlideFirstView extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  task.imageUrl,
+                child: task.imageUrl == null ? Image.asset('checklist.png') :
+                Image.network(
+                  task.imageUrl!,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -253,7 +254,7 @@ class SlideThirdView extends StatelessWidget {
             const Divider(),
             ListTile(
               title: const Text('Due Date'),
-              subtitle: Text(task.dueDate),
+              subtitle: Text(task.dueDate!),
               leading: const Icon(Icons.calendar_today),
             ),
             if (task.isCompleted) ...[

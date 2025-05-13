@@ -98,7 +98,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Task` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `category` TEXT NOT NULL, `priority` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `createdAt` TEXT, `completedAt` TEXT, `userId` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`username`) ON UPDATE NO ACTION ON DELETE CASCADE, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Task` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT, `dueDate` TEXT, `category` TEXT NOT NULL, `priority` INTEGER NOT NULL, `progress` INTEGER NOT NULL, `isCompleted` INTEGER NOT NULL, `createdAt` TEXT, `completedAt` TEXT, `userId` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`username`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`username` TEXT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `imageUrl` TEXT, `bornDate` TEXT NOT NULL, PRIMARY KEY (`username`))');
 
@@ -194,36 +194,36 @@ class _$TasksDao extends TasksDao {
   Future<List<Task>> getAllTasks() async {
     return _queryAdapter.queryList('SELECT * FROM Task',
         mapper: (Map<String, Object?> row) => Task(
-            id: row['id'] as String,
+            id: row['id'] as int?,
             title: row['title'] as String,
             description: row['description'] as String,
-            imageUrl: row['imageUrl'] as String,
-            dueDate: row['dueDate'] as String,
+            imageUrl: row['imageUrl'] as String?,
+            dueDate: row['dueDate'] as String?,
             priority: row['priority'] as int,
-            userId: row['userId'] as String,
-            category: row['category'] as String,
             progress: row['progress'] as int,
+            category: row['category'] as String,
             isCompleted: (row['isCompleted'] as int) != 0,
             createdAt: row['createdAt'] as String?,
-            completedAt: row['completedAt'] as String?));
+            completedAt: row['completedAt'] as String?,
+            userId: row['userId'] as String));
   }
 
   @override
-  Future<Task?> getTaskById(String id) async {
+  Future<Task?> getTaskById(int id) async {
     return _queryAdapter.query('SELECT * FROM Task WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Task(
-            id: row['id'] as String,
+            id: row['id'] as int?,
             title: row['title'] as String,
             description: row['description'] as String,
-            imageUrl: row['imageUrl'] as String,
-            dueDate: row['dueDate'] as String,
+            imageUrl: row['imageUrl'] as String?,
+            dueDate: row['dueDate'] as String?,
             priority: row['priority'] as int,
-            userId: row['userId'] as String,
-            category: row['category'] as String,
             progress: row['progress'] as int,
+            category: row['category'] as String,
             isCompleted: (row['isCompleted'] as int) != 0,
             createdAt: row['createdAt'] as String?,
-            completedAt: row['completedAt'] as String?),
+            completedAt: row['completedAt'] as String?,
+            userId: row['userId'] as String),
         arguments: [id]);
   }
 
@@ -231,41 +231,41 @@ class _$TasksDao extends TasksDao {
   Future<List<Task>> getTasksByUserId(String userId) async {
     return _queryAdapter.queryList('SELECT * FROM Task WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => Task(
-            id: row['id'] as String,
+            id: row['id'] as int?,
             title: row['title'] as String,
             description: row['description'] as String,
-            imageUrl: row['imageUrl'] as String,
-            dueDate: row['dueDate'] as String,
+            imageUrl: row['imageUrl'] as String?,
+            dueDate: row['dueDate'] as String?,
             priority: row['priority'] as int,
-            userId: row['userId'] as String,
-            category: row['category'] as String,
             progress: row['progress'] as int,
+            category: row['category'] as String,
             isCompleted: (row['isCompleted'] as int) != 0,
             createdAt: row['createdAt'] as String?,
-            completedAt: row['completedAt'] as String?),
+            completedAt: row['completedAt'] as String?,
+            userId: row['userId'] as String),
         arguments: [userId]);
   }
 
   @override
   Future<Task?> getTaskByIdAndUserId(
-    String id,
+    int id,
     String userId,
   ) async {
     return _queryAdapter.query(
         'SELECT * FROM Task WHERE id = ?1 AND userId = ?2',
         mapper: (Map<String, Object?> row) => Task(
-            id: row['id'] as String,
+            id: row['id'] as int?,
             title: row['title'] as String,
             description: row['description'] as String,
-            imageUrl: row['imageUrl'] as String,
-            dueDate: row['dueDate'] as String,
+            imageUrl: row['imageUrl'] as String?,
+            dueDate: row['dueDate'] as String?,
             priority: row['priority'] as int,
-            userId: row['userId'] as String,
-            category: row['category'] as String,
             progress: row['progress'] as int,
+            category: row['category'] as String,
             isCompleted: (row['isCompleted'] as int) != 0,
             createdAt: row['createdAt'] as String?,
-            completedAt: row['completedAt'] as String?),
+            completedAt: row['completedAt'] as String?,
+            userId: row['userId'] as String),
         arguments: [id, userId]);
   }
 

@@ -16,7 +16,7 @@ class TaskItem extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: task.imageUrl != null
-            ? _getImage(task.imageUrl)
+            ? _getImage(task.imageUrl!)
             : const Icon(Icons.task),
         title: Text(task.title.isNotEmpty ? task.title : 'Untitled Task'),
         subtitle: Text(task.description.isNotEmpty ? task.description : 'No description'),
@@ -30,7 +30,7 @@ class TaskItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
       child: Image.network(
-        task.imageUrl,
+        task.imageUrl!,
         errorBuilder: (context, error, stackTrace) {
           return const Icon(
             Icons.broken_image,
