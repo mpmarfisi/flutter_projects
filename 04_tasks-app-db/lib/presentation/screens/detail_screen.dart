@@ -67,6 +67,34 @@ class _DetailScreenState extends State<DetailScreen> {
               }
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: task == null ? null : () async {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Delete Task'),
+                    content: const Text('Are you sure you want to delete this task?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => context.pop(),
+                        child: const Text('Cancel'),
+                      ),
+                      FilledButton(
+                        onPressed: () async {
+                          await database.tasksDao.deleteTask(task!);
+                          context.pop();
+                          context.pop(true);
+                        }, 
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
         ],
       ),
       body: isLoading
@@ -88,14 +116,12 @@ class TaskDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: PageView(
-        children: [
-          SlideFirstView(task: task),
-          SlideSecondView(task: task),
-          SlideThirdView(task: task),
-        ]
-      ),
+    return PageView(
+      children: [
+        SlideFirstView(task: task),
+        SlideSecondView(task: task),
+        SlideThirdView(task: task),
+      ],
     );
   }
 }
@@ -110,32 +136,51 @@ class SlideFirstView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.network(
-          task.imageUrl,
-          errorBuilder: (context, error, stackTrace) {
-            return const Icon(
-              Icons.broken_image,
-              // size: 10,
-              color: Colors.grey,
-            );
-          },
-        ),
-        const SizedBox(height: 20),
-        Text(
-          task.title,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  task.imageUrl,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.broken_image,
+                      size: 100,
+                      color: Colors.grey,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                task.title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                task.description,
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
-        Text(
-          task.description,
-          style: const TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -150,25 +195,38 @@ class SlideSecondView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          task.category,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                task.category,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Progress: ${task.progress}%",
+                style: const TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Priority: ${task.priority}",
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
           ),
         ),
-        Text(
-          "Progress: ${task.progress.toString()}",
-          style: const TextStyle(fontSize: 18),
-        ),
-        Text(
-          "Priority: ${task.priority.toString()}",
-          style: const TextStyle(fontSize: 18),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -183,19 +241,31 @@ class SlideThirdView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Created At: ${task.createdAt}',
-          style: const TextStyle(fontSize: 18),
-        ),
-        if (task.isCompleted)
-          Text(
-            'Completed At: ${task.completedAt}',
-            style: const TextStyle(fontSize: 18),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Created At: ${task.createdAt}',
+                style: const TextStyle(fontSize: 18),
+              ),
+              if (task.isCompleted)
+                const SizedBox(height: 10),
+              if (task.isCompleted)
+                Text(
+                  'Completed At: ${task.completedAt}',
+                  style: const TextStyle(fontSize: 18),
+                ),
+            ],
           ),
-      ],
+        ),
+      ),
     );
   }
 }

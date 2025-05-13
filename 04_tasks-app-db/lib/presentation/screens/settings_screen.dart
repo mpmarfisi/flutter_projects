@@ -15,12 +15,12 @@ class SettingsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Settings Screen'),
-            ElevatedButton(
-              onPressed: () {
-                context.push('/profile');
-              },
-              child: const Text('Go to Profile'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     context.push('/profile');
+            //   },
+            //   child: const Text('Go to Profile'),
+            // ),
           ],
         ),
       ),
