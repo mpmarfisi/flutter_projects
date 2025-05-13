@@ -19,6 +19,8 @@ class AppTheme {
       textTheme: TextTheme(
         bodyLarge: TextStyle(fontSize: fontSize),
         bodyMedium: TextStyle(fontSize: fontSize),
+        displayLarge: TextStyle(fontSize: fontSize * 1.5, fontWeight: FontWeight.bold),
+        displayMedium: TextStyle(fontSize: fontSize * 1.2, fontWeight: FontWeight.bold),
       ),
       appBarTheme: const AppBarTheme(
         centerTitle: false,

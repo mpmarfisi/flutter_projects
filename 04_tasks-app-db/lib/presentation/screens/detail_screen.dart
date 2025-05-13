@@ -126,8 +126,7 @@ class TaskDetailView extends StatelessWidget {
     return PageView(
       children: [
         SlideFirstView(task: task),
-        SlideSecondView(task: task),
-        SlideThirdView(task: task),
+        SlideSecondView(task: task), // Combined view
       ],
     );
   }
@@ -151,39 +150,42 @@ class SlideFirstView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: task.imageUrl == null ? Image.asset('lib/assets/images/checklist.png', height: 200) :
-                Image.network(
-                  task.imageUrl!,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
+                if (task.imageUrl != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                    task.imageUrl!,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
                       Icons.broken_image,
                       size: 100,
                       color: Colors.grey,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
+                      );
+                    },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+                Text(
                 task.title,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
+              const Divider(),
+              Text(
+                'Description:',
+                style: Theme.of(context).textTheme.displayMedium,
               ),
               const SizedBox(height: 10),
               Text(
-                task.description,
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
+                task.description.isNotEmpty
+                    ? task.description
+                    : 'No description available.',
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
@@ -228,31 +230,7 @@ class SlideSecondView extends StatelessWidget {
               subtitle: Text('${task.progress}%'),
               leading: const Icon(Icons.timeline),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SlideThirdView extends StatelessWidget {
-  const SlideThirdView({
-    super.key,
-    required this.task,
-  });
-
-  final Task task;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
+            const Divider(),
             ListTile(
               title: const Text('Created At'),
               subtitle: Text(task.createdAt?.substring(0, 10) ?? 'N/A'),
@@ -261,7 +239,7 @@ class SlideThirdView extends StatelessWidget {
             const Divider(),
             ListTile(
               title: const Text('Due Date'),
-              subtitle: Text(task.dueDate!),
+              subtitle: Text(task.dueDate ?? 'N/A'),
               leading: const Icon(Icons.calendar_today),
             ),
             if (task.isCompleted) ...[
