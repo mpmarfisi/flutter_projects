@@ -74,6 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
+                    hintStyle: const TextStyle(fontSize: 16),
                     // hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.3),
@@ -91,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
+                    hintStyle: const TextStyle(fontSize: 16),
                     // hintStyle: const TextStyle(color: Colors.white),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.3),

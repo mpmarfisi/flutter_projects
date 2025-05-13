@@ -18,6 +18,7 @@ class DetailScreen extends StatefulWidget{
 class _DetailScreenState extends State<DetailScreen> {
   Task? task;
   bool isLoading = true;
+  bool hasChanges = false;
   String? errorMessage;
 
   @override
@@ -50,58 +51,64 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Task Detail'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: task == null ? null : () async {
-              final updatedTask = await context.push('/edit', extra: {'task': task, 'userId': task!.userId});
-              if (updatedTask != null) {
-                await database.tasksDao.updateTask(updatedTask as Task);
-                setState(() {
-                  task = updatedTask;
-                });
-                context.pop(true);
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: task == null ? null : () async {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Delete Task'),
-                          content: const Text('Are you sure you want to delete this task?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => context.pop(),
-                              child: const Text('Cancel'),
-                            ),
-                      FilledButton(
-                              onPressed: () async {
-                                await database.tasksDao.deleteTask(task!);
-                                context.pop();
-                                context.pop(true);
-                              }, 
-                              child: const Text('Delete'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        context.pop(hasChanges);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Task Detail'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: task == null ? null : () async {
+                final updatedTask = await context.push('/edit', extra: {'task': task, 'userId': task!.userId});
+                if (updatedTask != null) {
+                  await database.tasksDao.updateTask(updatedTask as Task);
+                  setState(() {
+                    task = updatedTask;
+                    hasChanges = true;
+                  });
+                }
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: task == null ? null : () async {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Delete Task'),
+                            content: const Text('Are you sure you want to delete this task?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.pop(),
+                                child: const Text('Cancel'),
+                              ),
+                        FilledButton(
+                                onPressed: () async {
+                                  await database.tasksDao.deleteTask(task!);
+                                  context.pop();
+                                  context.pop(true);
+                                }, 
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+            ),
+          ],
+        ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage != null
+                ? Center(child: Text(errorMessage!))
+                : TaskDetailView(task: task!),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(child: Text(errorMessage!))
-              : TaskDetailView(task: task!),
     );
   }
 }

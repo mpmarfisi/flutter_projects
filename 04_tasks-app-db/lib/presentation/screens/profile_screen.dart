@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         nameController.text = user!.name;
         emailController.text = user!.email;
         usernameController.text = user!.username;
-        bornDateController.text = user!.bornDate;
+        bornDateController.text = user!.bornDate.substring(0, 10);
       });
     }
   }

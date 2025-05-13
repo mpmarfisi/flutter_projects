@@ -163,46 +163,23 @@ class _TasksView extends StatelessWidget {
           return const Center(child: Text('No tasks available.'));
         } else {
           final tasks = snapshot.data!;
-          final priority0Tasks = tasks.where((task) => task.priority == 0).toList();
-          final priority1Tasks = tasks.where((task) => task.priority == 1).toList();
-          final priority2Tasks = tasks.where((task) => task.priority == 2).toList();
           final priority3Tasks = tasks.where((task) => task.priority == 3).toList();
+          final priority2Tasks = tasks.where((task) => task.priority == 2).toList();
+          final priority1Tasks = tasks.where((task) => task.priority == 1).toList();
+          final priority0Tasks = tasks.where((task) => task.priority == 0).toList();
 
-          final hasTasks = priority0Tasks.isNotEmpty ||
-              priority1Tasks.isNotEmpty ||
+          final hasTasks = priority3Tasks.isNotEmpty ||
               priority2Tasks.isNotEmpty ||
-              priority3Tasks.isNotEmpty;
+              priority1Tasks.isNotEmpty ||
+              priority0Tasks.isNotEmpty;
 
           return hasTasks
               ? ListView(
+                  padding: const EdgeInsets.all(8.0),
                   children: [
-                    if (priority0Tasks.isNotEmpty) ...[
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Priority 0',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ...priority0Tasks.map((task) => TaskItem(
-                            task: task,
-                            onTap: () async {
-                              final result = await context.push('/task-details/${task.id}');
-                              if (result == true) {
-                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
-                              }
-                            },
-                          )),
-                    ],
-                    if (priority1Tasks.isNotEmpty) ...[
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Priority 1',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ...priority1Tasks.map((task) => TaskItem(
+                    if (priority3Tasks.isNotEmpty) ...[
+                      _buildPriorityLabel('Priority 3', Colors.red),
+                      ...priority3Tasks.map((task) => TaskItem(
                             task: task,
                             onTap: () async {
                               final result = await context.push('/task-details/${task.id}');
@@ -213,13 +190,7 @@ class _TasksView extends StatelessWidget {
                           )),
                     ],
                     if (priority2Tasks.isNotEmpty) ...[
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Priority 2',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                      _buildPriorityLabel('Priority 2', Colors.orange),
                       ...priority2Tasks.map((task) => TaskItem(
                             task: task,
                             onTap: () async {
@@ -230,15 +201,21 @@ class _TasksView extends StatelessWidget {
                             },
                           )),
                     ],
-                    if (priority3Tasks.isNotEmpty) ...[
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          'Priority 3',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      ...priority3Tasks.map((task) => TaskItem(
+                    if (priority1Tasks.isNotEmpty) ...[
+                      _buildPriorityLabel('Priority 1', Colors.blue),
+                      ...priority1Tasks.map((task) => TaskItem(
+                            task: task,
+                            onTap: () async {
+                              final result = await context.push('/task-details/${task.id}');
+                              if (result == true) {
+                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
+                              }
+                            },
+                          )),
+                    ],
+                    if (priority0Tasks.isNotEmpty) ...[
+                      _buildPriorityLabel('Priority 0', Colors.grey),
+                      ...priority0Tasks.map((task) => TaskItem(
                             task: task,
                             onTap: () async {
                               final result = await context.push('/task-details/${task.id}');
@@ -255,6 +232,20 @@ class _TasksView extends StatelessWidget {
                 );
         }
       },
+    );
+  }
+
+  Widget _buildPriorityLabel(String label, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        label,
+        style: TextStyle(
+          // fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
+      ),
     );
   }
 }
