@@ -17,7 +17,7 @@ class TaskItem extends StatelessWidget {
       child: ListTile(
         leading: task.imageUrl != null
             ? _getImage(task.imageUrl!)
-            : const Icon(Icons.task),
+            : const Icon(Icons.task, size: 40),
         title: Text(task.title.isNotEmpty ? task.title : 'Untitled Task'),
         subtitle: Text(task.description.isNotEmpty ? task.description : 'No description'),
         trailing: const Icon(Icons.arrow_forward_ios),
@@ -31,10 +31,11 @@ class TaskItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: Image.network(
         task.imageUrl!,
+        width: 40,
         errorBuilder: (context, error, stackTrace) {
           return const Icon(
             Icons.broken_image,
-            // size: 10,
+            size: 40,
             color: Colors.grey,
           );
         },
