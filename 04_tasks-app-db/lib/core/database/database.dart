@@ -29,9 +29,16 @@ abstract class AppDatabase extends FloorDatabase {
     final users = [
       User(
         username: 'user123',
-        name: 'User Name',
+        name: 'User Name1',
         email: 'user@example.com',
         password: 'pass123',
+        bornDate: DateTime(1990, 1, 1).toString(),
+      ),
+      User(
+        username: 'user456',
+        name: 'User Name2',
+        email: 'user@example.com',
+        password: 'pass456',
         bornDate: DateTime(1990, 1, 1).toString(),
       ),
     ];

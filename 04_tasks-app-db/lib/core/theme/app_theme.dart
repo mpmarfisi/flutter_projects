@@ -8,7 +8,7 @@ class AppTheme {
   AppTheme({
     this.selectedColor = const Color.fromARGB(255, 255, 0, 0),
     this.isDarkMode = false,
-    this.fontSize = 14.0, // Default font size
+    this.fontSize = 16.0, // Default font size
   });
 
   ThemeData getTheme() {

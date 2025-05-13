@@ -16,6 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController bornDateController = TextEditingController();
+  TextEditingController imageUrlController = TextEditingController();
 
   bool isModified = false;
   User? user;
@@ -35,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         emailController.text = user!.email;
         usernameController.text = user!.username;
         bornDateController.text = user!.bornDate.substring(0, 10);
+        imageUrlController.text = user!.imageUrl ?? '';
       });
     }
   }
@@ -44,7 +46,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isModified = user != null &&
           (nameController.text != user!.name ||
            emailController.text != user!.email ||
-           bornDateController.text != user!.bornDate);
+           bornDateController.text != user!.bornDate ||
+           imageUrlController.text != (user!.imageUrl ?? ''));
     });
   }
 
@@ -55,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         name: nameController.text,
         email: emailController.text,
         password: user!.password,
-        imageUrl: user!.imageUrl,
+        imageUrl: imageUrlController.text.isEmpty ? null : imageUrlController.text,
         bornDate: bornDateController.text,
       );
       await database.userDao.updateUser(updatedUser);
@@ -99,11 +102,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(user!.imageUrl ?? 'https://placeholder.com/avatar.png'),
+                      backgroundImage: user!.imageUrl == null ? AssetImage('lib/assets/images/avatar.png') : NetworkImage(user!.imageUrl!),
                       onBackgroundImageError: (exception, stackTrace) {
                         setState(() {});
                       },
-                      child: const Icon(Icons.broken_image, color: Colors.grey),
+                      // child: const Icon(Icons.broken_image, color: Colors.grey),
                     ),
                     const SizedBox(height: 20),
                     TextField(
@@ -129,6 +132,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       readOnly: true,
                       decoration: const InputDecoration(labelText: 'Born Date', border: OutlineInputBorder()),
                       onTap: _selectBornDate,
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: imageUrlController,
+                      decoration: const InputDecoration(labelText: 'Image URL', border: OutlineInputBorder()),
+                      onChanged: (_) => _checkIfModified(),
                     ),
                     const SizedBox(height: 50),
                     ElevatedButton(

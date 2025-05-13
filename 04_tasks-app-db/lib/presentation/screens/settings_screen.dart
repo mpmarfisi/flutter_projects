@@ -26,7 +26,7 @@ class SettingsScreen extends ConsumerWidget {
               value: appTheme.isDarkMode,
               onChanged: (value) => themeNotifier.setDarkMode(value),
             ),
-            const SizedBox(height: 20),
+            const Divider(),
             ListTile(
               // contentPadding: EdgeInsets.zero,
               title: Row(
@@ -78,7 +78,7 @@ class SettingsScreen extends ConsumerWidget {
                 child: const Text('Change'),
               ),
             ),
-            const SizedBox(height: 20),
+            const Divider(),
             ListTile(
               title: const Text('Font Size'),
               subtitle: Slider(

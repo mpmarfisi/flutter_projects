@@ -100,8 +100,8 @@ class _EditScreenState extends State<EditScreen> {
                 items: List.generate(
                   4,
                   (index) => DropdownMenuItem(
-                    value: index,
-                    child: Text('Priority $index'),
+                    value: 3-index,
+                    child: Text('Priority ${3-index}'),
                   ),
                 ),
                 onChanged: (value) {
