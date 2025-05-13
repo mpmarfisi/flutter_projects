@@ -148,7 +148,7 @@ class SlideFirstView extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: task.imageUrl == null ? Image.asset('checklist.png') :
+                child: task.imageUrl == null ? Image.asset('lib/assets/images/checklist.png') :
                 Image.network(
                   task.imageUrl!,
                   height: 200,

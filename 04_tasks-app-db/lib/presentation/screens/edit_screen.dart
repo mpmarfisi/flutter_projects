@@ -141,10 +141,10 @@ class _EditScreenState extends State<EditScreen> {
                   if (_formKey.currentState?.validate() ?? false) {
                     _formKey.currentState?.save();
                     final task = Task(
-                      // id: id,
+                      id: widget.task?.id,
                       title: title,
                       description: description,
-                      imageUrl: imageUrl,
+                      imageUrl: imageUrl == '' ? null : imageUrl,
                       dueDate: dueDate,
                       category: category,
                       priority: priority,
