@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:navigation/core/database/database.dart';
 import 'package:navigation/core/router/app_router.dart';
+import 'package:navigation/presentation/providers/theme_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 late AppDatabase database;
 Future<void> main() async {
@@ -13,18 +15,22 @@ Future<void> main() async {
   database = await AppDatabase.create('task_app_db.db');
   stopwatch.stop();
   log('Database initialized in ${stopwatch.elapsed.inMilliseconds}ms');
-
-  runApp(const MainApp());
+  
+  runApp(const ProviderScope(
+    child: MainApp(),
+  ));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appTheme = ref.watch(themeNotifierProvider);
     return MaterialApp.router (
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
+      theme: appTheme.getTheme(),
     );
   }
 }

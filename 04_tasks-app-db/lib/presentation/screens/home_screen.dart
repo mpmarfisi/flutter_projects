@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
         tasksFuture: _tasksFuture,
         onTasksUpdated: _refreshTasks, // Pass the callback to _TasksView
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newTask = await context.push('/edit', extra: {'userId': widget.username}) as Task?;
           if (newTask != null) {
@@ -122,13 +122,13 @@ class _HomeScreenState extends State<HomeScreen> {
             _refreshTasks(); // Refresh tasks after adding a new one
           }
         },
-        label: const Text('+'),
         shape: CircleBorder(
           side: BorderSide(
             color: Theme.of(context).primaryColor,
-            width: 2,
+            width: 3,
           ),
         ),
+        child: const Icon(Icons.add),
       ),
     );
   }
