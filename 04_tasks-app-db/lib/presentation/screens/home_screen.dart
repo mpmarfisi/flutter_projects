@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:navigation/data/tasks_list.dart';
 import 'package:navigation/domain/task.dart';
 import 'package:navigation/main.dart';
 import 'package:navigation/presentation/widgets/task_item.dart';
@@ -24,6 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
       throw Exception('Invalid username passed to HomeScreen');
     }
     _tasksFuture = database.tasksDao.getTasksByUserId(widget.username);
+  }
+
+  void _refreshTasks() {
+    setState(() {
+      _tasksFuture = database.tasksDao.getTasksByUserId(widget.username);
+    });
   }
 
   @override
@@ -108,25 +113,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       // body: _TasksView(username: widget.username),
-      body: _TasksView(tasksFuture: _tasksFuture),
+      body: _TasksView(
+        tasksFuture: _tasksFuture,
+        onTasksUpdated: _refreshTasks, // Pass the callback to _TasksView
+      ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => SnackBar(
-          content: const Text('Snackbar'),
-          action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              // Some code to undo the change.
-            },
-          ),
-        ),
-        label: const Text('+'), 
+        onPressed: () async {
+          final newTask = await context.push('/edit', extra: {'userId': widget.username}) as Task?;
+          if (newTask != null) {
+            await database.tasksDao.insertTask(newTask);
+            _refreshTasks(); // Refresh tasks after adding a new one
+          }
+        },
+        label: const Text('+'),
         shape: CircleBorder(
           side: BorderSide(
             color: Theme.of(context).primaryColor,
             width: 2,
           ),
         ),
-        // icon: const Icon(Icons.plus_one_outlined),
       ),
     );
   }
@@ -136,9 +141,11 @@ class _TasksView extends StatelessWidget {
   const _TasksView({
     super.key,
     required this.tasksFuture,
+    required this.onTasksUpdated,
   });
 
   final Future<List<Task>> tasksFuture;
+  final VoidCallback onTasksUpdated; // Callback to notify HomeScreen
 
   @override
   Widget build(BuildContext context) {
@@ -158,8 +165,11 @@ class _TasksView extends StatelessWidget {
             itemBuilder: (context, index) {
               return TaskItem(
                 task: tasks[index],
-                onTap: () {
-                  navigateToDetailScreen(context, tasks[index]);
+                onTap: () async {
+                  final result = await context.push('/task-details/${tasks[index].id}');
+                  if (result == true) {
+                    onTasksUpdated(); // Notify HomeScreen to refresh tasks
+                  }
                 },
               );
             },
@@ -167,9 +177,5 @@ class _TasksView extends StatelessWidget {
         }
       },
     );
-  }
-
-  void navigateToDetailScreen(BuildContext context, Task task) {
-    context.push('/task-details/${task.id}');
   }
 }

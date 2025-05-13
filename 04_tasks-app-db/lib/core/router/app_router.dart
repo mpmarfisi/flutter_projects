@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:navigation/domain/task.dart';
 import 'package:navigation/presentation/screens/detail_screen.dart';
 import 'package:navigation/presentation/screens/edit_screen.dart';
 import 'package:navigation/presentation/screens/home_screen.dart';
@@ -39,7 +39,12 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/edit',
-      builder: (context, state) => const EditScreen()
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+        final task = extra['task'] as Task?;
+        final userId = extra['userId'] as String;
+        return EditScreen(task: task, userId: userId);
+      },
     ),
     // Add more routes here
   ],

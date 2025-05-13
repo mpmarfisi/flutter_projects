@@ -1,16 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:navigation/data/tasks_list.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation/domain/task.dart';
 import 'package:navigation/main.dart';
-import 'package:navigation/presentation/screens/edit_screen.dart';
 
-class DetailScreen extends StatelessWidget{
+class DetailScreen extends StatefulWidget{
   const DetailScreen({
     super.key,
     required this.taskId,
   });
 
   final String taskId;
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  Task? task;
+  bool isLoading = true;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTask();
+  }
+
+  Future<void> _loadTask() async {
+    try {
+      final fetchedTask = await database.tasksDao.getTaskById(widget.taskId);
+      if (fetchedTask == null) {
+        setState(() {
+          errorMessage = 'Task not found.';
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          task = fetchedTask;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error: $e';
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,35 +56,24 @@ class DetailScreen extends StatelessWidget{
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () async {
-              // final updatedTask = await context.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => EditScreen(task: task),
-              //   ),
-              // );
-              // if (updatedTask != null) {
-              //   // Handle the updated task (e.g., update the task list)
-              // }
+            onPressed: task == null ? null : () async {
+              final updatedTask = await context.push('/edit', extra: {'task': task, 'userId': task!.userId});
+              if (updatedTask != null) {
+                await database.tasksDao.updateTask(updatedTask as Task);
+                setState(() {
+                  task = updatedTask; // Update the task after editing
+                });
+                context.pop(true); // Indicate that an update occurred
+              }
             },
           ),
         ],
       ),
-      body: FutureBuilder<Task?>(
-        future: database.tasksDao.getTaskById(taskId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('Task not found.'));
-          } else {
-            final task = snapshot.data!;
-            return TaskDetailView(task: task);
-          }
-        },
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage != null
+              ? Center(child: Text(errorMessage!))
+              : TaskDetailView(task: task!),
     );
   }
 }
@@ -88,7 +113,16 @@ class SlideFirstView extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.network(task.imageUrl),
+        Image.network(
+          task.imageUrl,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(
+              Icons.broken_image,
+              // size: 10,
+              color: Colors.grey,
+            );
+          },
+        ),
         const SizedBox(height: 20),
         Text(
           task.title,

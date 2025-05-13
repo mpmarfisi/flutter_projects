@@ -1,6 +1,5 @@
 // required package imports
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:floor/floor.dart';
 import 'package:navigation/data/user_dao.dart';

@@ -29,7 +29,16 @@ class TaskItem extends StatelessWidget {
   Widget _getImage(String imageUrl) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: Image.network(imageUrl),
+      child: Image.network(
+        task.imageUrl,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(
+            Icons.broken_image,
+            // size: 10,
+            color: Colors.grey,
+          );
+        },
+      ),
     );
   }
 }

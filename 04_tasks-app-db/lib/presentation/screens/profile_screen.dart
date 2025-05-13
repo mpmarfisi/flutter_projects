@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:navigation/domain/user.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -118,8 +117,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 margin: const EdgeInsets.only(bottom: 20),
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(
-                    user.imageUrl ?? 'https://placeholder.com/avatar.png',
+                  backgroundImage: NetworkImage(user.imageUrl ?? 'https://placeholder.com/avatar.png'),
+                  onBackgroundImageError: (exception, stackTrace) {
+                    setState(() {}); // Trigger rebuild to show error icon
+                  },
+                  child: const Icon(
+                    Icons.broken_image,
+                    // size: 100,
+                    color: Colors.grey,
                   ),
                 ),
               ),

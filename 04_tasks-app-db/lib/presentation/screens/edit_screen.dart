@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:navigation/domain/task.dart';
 
 class EditScreen extends StatefulWidget {
   final Task? task;
+  final String userId;
 
-  const EditScreen({super.key, this.task});
+  const EditScreen({super.key, this.task, required this.userId});
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -35,6 +37,7 @@ class _EditScreenState extends State<EditScreen> {
     priority = task?.priority ?? 0;
     progress = task?.progress ?? 0;
     isCompleted = task?.isCompleted ?? false;
+    setState(() {});
   }
 
   @override
@@ -110,9 +113,9 @@ class _EditScreenState extends State<EditScreen> {
                       isCompleted: isCompleted,
                       createdAt: widget.task?.createdAt ?? DateTime.now().toIso8601String(),
                       completedAt: isCompleted ? DateTime.now().toIso8601String() : null, 
-                      userId: '',
+                      userId: widget.userId, // Use the passed userId instead of empty string
                     );
-                    Navigator.pop(context, task);
+                    context.pop(task);
                   }
                 },
                 child: const Text('Save'),
