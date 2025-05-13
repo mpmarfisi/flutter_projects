@@ -70,30 +70,30 @@ class _DetailScreenState extends State<DetailScreen> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: task == null ? null : () async {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Delete Task'),
-                    content: const Text('Are you sure you want to delete this task?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => context.pop(),
-                        child: const Text('Cancel'),
-                      ),
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Delete Task'),
+                          content: const Text('Are you sure you want to delete this task?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => context.pop(),
+                              child: const Text('Cancel'),
+                            ),
                       FilledButton(
-                        onPressed: () async {
-                          await database.tasksDao.deleteTask(task!);
+                              onPressed: () async {
+                                await database.tasksDao.deleteTask(task!);
                           context.pop();
-                          context.pop(true);
-                        }, 
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
+                                context.pop(true);
+                              }, 
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
           ),
         ],
       ),
@@ -200,31 +200,27 @@ class SlideSecondView extends StatelessWidget {
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                task.category,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Progress: ${task.progress}%",
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "Priority: ${task.priority}",
-                style: const TextStyle(fontSize: 18),
-              ),
-            ],
-          ),
+          children: [
+            ListTile(
+              title: const Text('Category'),
+              subtitle: Text(task.category),
+              leading: const Icon(Icons.category),
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('Priority'),
+              subtitle: Text(task.priority.toString()),
+              leading: const Icon(Icons.priority_high),
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('Progress'),
+              subtitle: Text('${task.progress}%'),
+              leading: const Icon(Icons.timeline),
+            ),
+          ],
         ),
       ),
     );
@@ -246,24 +242,29 @@ class SlideThirdView extends StatelessWidget {
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Created At: ${task.createdAt}',
-                style: const TextStyle(fontSize: 18),
+          children: [
+            ListTile(
+              title: const Text('Created At'),
+              subtitle: Text(task.createdAt?.substring(0, 10) ?? 'N/A'),
+              leading: const Icon(Icons.date_range),
+            ),
+            const Divider(),
+            ListTile(
+              title: const Text('Due Date'),
+              subtitle: Text(task.dueDate),
+              leading: const Icon(Icons.calendar_today),
+            ),
+            if (task.isCompleted) ...[
+              const Divider(),
+              ListTile(
+                title: const Text('Completed At'),
+                subtitle: Text(task.completedAt?.substring(0, 10) ?? 'N/A'),
+                leading: const Icon(Icons.check_circle),
               ),
-              if (task.isCompleted)
-                const SizedBox(height: 10),
-              if (task.isCompleted)
-                Text(
-                  'Completed At: ${task.completedAt}',
-                  style: const TextStyle(fontSize: 18),
-                ),
             ],
-          ),
+          ],
         ),
       ),
     );

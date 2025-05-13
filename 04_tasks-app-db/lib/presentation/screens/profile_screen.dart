@@ -72,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _selectBornDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.parse(user?.bornDate ?? DateTime.now().toIso8601String()),
+      initialDate: DateTime.parse(user?.bornDate ?? DateTime.now().toString().substring(0, 10)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );

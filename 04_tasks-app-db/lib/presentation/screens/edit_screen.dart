@@ -28,7 +28,7 @@ class _EditScreenState extends State<EditScreen> {
   void initState() {
     super.initState();
     final task = widget.task;
-    id = task?.id ?? DateTime.now().toString();
+    id = task?.id ?? DateTime.now().toString().substring(0, 10);
     title = task?.title ?? '';
     description = task?.description ?? '';
     imageUrl = task?.imageUrl ?? '';
@@ -38,6 +38,20 @@ class _EditScreenState extends State<EditScreen> {
     progress = task?.progress ?? 0;
     isCompleted = task?.isCompleted ?? false;
     setState(() {});
+  }
+
+  Future<void> _selectDueDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: dueDate.isNotEmpty ? DateTime.parse(dueDate) : DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        dueDate = '${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}';
+      });
+    }
   }
 
   @override
@@ -70,9 +84,10 @@ class _EditScreenState extends State<EditScreen> {
                 onSaved: (value) => imageUrl = value ?? '',
               ),
               TextFormField(
-                initialValue: dueDate,
+                readOnly: true,
                 decoration: const InputDecoration(labelText: 'Due Date'),
-                onSaved: (value) => dueDate = value ?? '',
+                controller: TextEditingController(text: dueDate),
+                onTap: _selectDueDate,
               ),
               TextFormField(
                 initialValue: category,
@@ -84,12 +99,26 @@ class _EditScreenState extends State<EditScreen> {
                 decoration: const InputDecoration(labelText: 'Priority'),
                 keyboardType: TextInputType.number,
                 onSaved: (value) => priority = int.tryParse(value ?? '0') ?? 0,
+                validator: (value) {
+                  final parsedValue = int.tryParse(value ?? '');
+                  if (parsedValue == null || parsedValue < 0 || parsedValue > 3) {
+                    return 'Priority must be between 0 and 3';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 initialValue: progress.toString(),
                 decoration: const InputDecoration(labelText: 'Progress'),
                 keyboardType: TextInputType.number,
                 onSaved: (value) => progress = int.tryParse(value ?? '0') ?? 0,
+                validator: (value) {
+                  final parsedValue = int.tryParse(value ?? '');
+                  if (parsedValue == null || parsedValue < 0 || parsedValue > 100) {
+                    return 'Progress must be between 0 and 100';
+                  }
+                  return null;
+                },
               ),
               SwitchListTile(
                 title: const Text('Completed'),
@@ -111,8 +140,8 @@ class _EditScreenState extends State<EditScreen> {
                       priority: priority,
                       progress: progress,
                       isCompleted: isCompleted,
-                      createdAt: widget.task?.createdAt ?? DateTime.now().toIso8601String(),
-                      completedAt: isCompleted ? DateTime.now().toIso8601String() : null, 
+                      createdAt: widget.task?.createdAt ?? DateTime.now().toString().substring(0, 10),
+                      completedAt: isCompleted ? DateTime.now().toString().substring(0, 10) : null, 
                       userId: widget.userId,
                     );
                     context.pop(task);

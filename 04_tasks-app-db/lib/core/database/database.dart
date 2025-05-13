@@ -32,7 +32,7 @@ abstract class AppDatabase extends FloorDatabase {
         name: 'User Name',
         email: 'user@example.com',
         password: 'pass123',
-        bornDate: DateTime(1990, 1, 1).toIso8601String(),
+        bornDate: DateTime(1990, 1, 1).toString(),
       ),
     ];
 
@@ -45,7 +45,7 @@ abstract class AppDatabase extends FloorDatabase {
         dueDate: '2023-12-31',
         priority: 1,
         userId: 'user123', // Associate task with user
-        createdAt: DateTime.now().toIso8601String(),
+        createdAt: DateTime.now().toString().substring(0, 10),
       ),
     ];
 
