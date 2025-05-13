@@ -61,9 +61,9 @@ class _DetailScreenState extends State<DetailScreen> {
               if (updatedTask != null) {
                 await database.tasksDao.updateTask(updatedTask as Task);
                 setState(() {
-                  task = updatedTask; // Update the task after editing
+                  task = updatedTask;
                 });
-                context.pop(true); // Indicate that an update occurred
+                context.pop(true);
               }
             },
           ),

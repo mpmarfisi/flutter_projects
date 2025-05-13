@@ -113,7 +113,7 @@ class _EditScreenState extends State<EditScreen> {
                       isCompleted: isCompleted,
                       createdAt: widget.task?.createdAt ?? DateTime.now().toIso8601String(),
                       completedAt: isCompleted ? DateTime.now().toIso8601String() : null, 
-                      userId: widget.userId, // Use the passed userId instead of empty string
+                      userId: widget.userId,
                     );
                     context.pop(task);
                   }

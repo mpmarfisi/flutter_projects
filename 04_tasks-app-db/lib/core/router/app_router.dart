@@ -31,7 +31,10 @@ final appRouter = GoRouter(
     }),
     GoRoute(
       path: '/profile',
-      builder: (context, state) => const ProfileScreen()
+      builder: (context, state) {
+        final username = state.extra as String; // Explicitly cast to String
+        return ProfileScreen(username: username);
+      },
     ),
     GoRoute(
       path: '/settings',

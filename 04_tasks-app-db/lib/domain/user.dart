@@ -8,14 +8,14 @@ class User {
   final String email;
   final String password;
   final String? imageUrl;
-  final String bornDate; // Changed from DateTime to String
+  final String bornDate;
 
   User({
     required this.username,
     required this.name,
     required this.email,
     required this.password,
-    required this.bornDate, // Updated type
+    required this.bornDate,
     this.imageUrl,
   });
 

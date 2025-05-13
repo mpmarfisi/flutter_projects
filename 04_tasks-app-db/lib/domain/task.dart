@@ -34,7 +34,7 @@ class Task {
     required this.imageUrl,
     required this.dueDate,
     required this.priority,
-    required this.userId, // Add userId
+    required this.userId,
     this.category = 'General',
     this.progress = 0,
     this.isCompleted = false,

@@ -21,9 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (user != null && user.password == passwordController.text) {
       // Navigate to the home screen
+      if(!mounted) return;
       context.go('/home', extra: user.username);
     } else {
       // Show an error message
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid username or password')),
       );

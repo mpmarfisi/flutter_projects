@@ -65,8 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Profile'),
               onTap: () {
                 context.pop(context); // Close the drawer
-                // Navigate to Profile screen
-                context.push('/profile');
+                context.push('/profile', extra: widget.username);
               },
             ),
             ListTile(
@@ -74,7 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Settings'),
               onTap: () {
                 context.pop(context); // Close the drawer
-                // Navigate to Settings screen
                 context.push('/settings');
               },
             ),
@@ -86,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      // title: const Text('Cerrar sesión'),
                       content: const Text('Are you sure you want to logoff?'),
                       actions: <Widget>[
                         TextButton(
@@ -139,7 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _TasksView extends StatelessWidget {
   const _TasksView({
-    super.key,
     required this.tasksFuture,
     required this.onTasksUpdated,
   });
