@@ -1,38 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:navigation/domain/task.dart';
 import 'package:navigation/main.dart';
+import 'package:navigation/presentation/providers/theme_provider.dart';
 import 'package:navigation/presentation/widgets/task_item.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key, required this.username});
 
   final String username;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeNotifier = ref.read(themeNotifierProvider.notifier);
+    var tasksFuture = database.tasksDao.getTasksByUserId(username);
 
-class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<Task>> _tasksFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.username.isEmpty) {
-      throw Exception('Invalid username passed to HomeScreen');
+    void _refreshTasks() {
+      tasksFuture = database.tasksDao.getTasksByUserId(username);
     }
-    _tasksFuture = database.tasksDao.getTasksByUserId(widget.username);
-  }
 
-  void _refreshTasks() {
-    setState(() {
-      _tasksFuture = database.tasksDao.getTasksByUserId(widget.username);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
@@ -65,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Profile'),
               onTap: () {
                 context.pop(context); // Close the drawer
-                context.push('/profile', extra: widget.username);
+                context.push('/profile', extra: username);
               },
             ),
             ListTile(
@@ -95,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         FilledButton(
                           child: const Text('Logoff'),
                           onPressed: () {
+                            themeNotifier.resetTheme(); // Reset theme
                             context.pop();
                             context.pop(context);
                             context.go('/login');
@@ -109,21 +97,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      // body: _TasksView(username: widget.username),
       body: _TasksView(
-        tasksFuture: _tasksFuture,
+        tasksFuture: tasksFuture,
         onTasksUpdated: _refreshTasks, // Pass the callback to _TasksView
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final Task? newTask;
-          try{
-            newTask = await context.push('/edit', extra: {'userId': widget.username}) as Task?;
+          try {
+            newTask = await context.push('/edit', extra: {'userId': username}) as Task?;
             if (newTask != null) {
               await database.tasksDao.insertTask(newTask);
               _refreshTasks(); // Refresh tasks after adding a new one
             }
-          }catch(e){
+          } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Error adding task')),
             );
@@ -163,69 +150,29 @@ class _TasksView extends StatelessWidget {
           return const Center(child: Text('No tasks available.'));
         } else {
           final tasks = snapshot.data!;
-          final priority3Tasks = tasks.where((task) => task.priority == 3).toList();
-          final priority2Tasks = tasks.where((task) => task.priority == 2).toList();
-          final priority1Tasks = tasks.where((task) => task.priority == 1).toList();
-          final priority0Tasks = tasks.where((task) => task.priority == 0).toList();
 
-          final hasTasks = priority3Tasks.isNotEmpty ||
-              priority2Tasks.isNotEmpty ||
-              priority1Tasks.isNotEmpty ||
-              priority0Tasks.isNotEmpty;
+          final priorities = [
+            {'label': 'Priority 3', 'color': Colors.red, 'value': 3},
+            {'label': 'Priority 2', 'color': Colors.orange, 'value': 2},
+            {'label': 'Priority 1', 'color': Colors.blue, 'value': 1},
+            {'label': 'Priority 0', 'color': Colors.grey, 'value': 0},
+          ];
+
+          final hasTasks = tasks.isNotEmpty;
 
           return hasTasks
               ? ListView(
                   padding: const EdgeInsets.all(8.0),
-                  children: [
-                    if (priority3Tasks.isNotEmpty) ...[
-                      _buildPriorityLabel('Priority 3', Colors.red),
-                      ...priority3Tasks.map((task) => TaskItem(
-                            task: task,
-                            onTap: () async {
-                              final result = await context.push('/task-details/${task.id}');
-                              if (result == true) {
-                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
-                              }
-                            },
-                          )),
-                    ],
-                    if (priority2Tasks.isNotEmpty) ...[
-                      _buildPriorityLabel('Priority 2', Colors.orange),
-                      ...priority2Tasks.map((task) => TaskItem(
-                            task: task,
-                            onTap: () async {
-                              final result = await context.push('/task-details/${task.id}');
-                              if (result == true) {
-                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
-                              }
-                            },
-                          )),
-                    ],
-                    if (priority1Tasks.isNotEmpty) ...[
-                      _buildPriorityLabel('Priority 1', Colors.blue),
-                      ...priority1Tasks.map((task) => TaskItem(
-                            task: task,
-                            onTap: () async {
-                              final result = await context.push('/task-details/${task.id}');
-                              if (result == true) {
-                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
-                              }
-                            },
-                          )),
-                    ],
-                    if (priority0Tasks.isNotEmpty) ...[
-                      _buildPriorityLabel('Priority 0', Colors.grey),
-                      ...priority0Tasks.map((task) => TaskItem(
-                            task: task,
-                            onTap: () async {
-                              final result = await context.push('/task-details/${task.id}');
-                              if (result == true) {
-                                onTasksUpdated(); // Notify HomeScreen to refresh tasks
-                              }
-                            },
-                          )),
-                    ],
-                  ],
+                  children: priorities
+                      .map((priority) => _buildPrioritySection(
+                            label: priority['label'] as String,
+                            color: priority['color'] as Color,
+                            priorityValue: priority['value'] as int,
+                            tasks: tasks,
+                            onTasksUpdated: onTasksUpdated,
+                            context: context,
+                          ))
+                      .toList(),
                 )
               : const Center(
                   child: Text('No tasks available for any priority.'),
@@ -246,6 +193,35 @@ class _TasksView extends StatelessWidget {
           color: color,
         ),
       ),
+    );
+  }
+
+  Widget _buildPrioritySection({
+    required String label,
+    required Color color,
+    required int priorityValue,
+    required List<Task> tasks,
+    required VoidCallback onTasksUpdated,
+    required BuildContext context,
+  }) {
+    final filteredTasks = tasks.where((task) => task.priority == priorityValue).toList();
+
+    if (filteredTasks.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildPriorityLabel(label, color),
+        ...filteredTasks.map((task) => TaskItem(
+              task: task,
+              onTap: () async {
+                final result = await context.push('/task-details/${task.id}');
+                if (result == true) {
+                  onTasksUpdated(); // Notify HomeScreen to refresh tasks
+                }
+              },
+            )),
+      ],
     );
   }
 }

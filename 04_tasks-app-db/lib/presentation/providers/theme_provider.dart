@@ -20,4 +20,8 @@ class ThemeNotifier extends StateNotifier<AppTheme> {
   void setFontSize(double fontSize) {
     state = state.copyWith(fontSize: fontSize);
   }
+
+  void resetTheme() {
+    state = AppTheme(); // Reset to default theme
+  }
 }
